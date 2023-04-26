@@ -17,6 +17,8 @@ class _MenuViewState extends State<MenuView> {
   final convertToController = TextEditingController();
   dynamic result;
   var _con = '';
+  var _cur = '';
+  var _amt = '';
 
 
   // This widget is the root of your application.
@@ -34,7 +36,7 @@ class _MenuViewState extends State<MenuView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text(
-                  'Type the currency you want to convert',
+                  'Type in the currency to convert',
                   style: TextStyle(fontSize: 24),
                 ),
                 const SizedBox(height: 16),
@@ -64,7 +66,7 @@ class _MenuViewState extends State<MenuView> {
                 const SizedBox(height: 16),
                 if(result != null)
                   Text(
-                      '$result $_con'
+                      '$_amt $_cur = $result $_con'
                   ),
                 const SizedBox(height: 16),
                 ElevatedButton(
@@ -73,9 +75,14 @@ class _MenuViewState extends State<MenuView> {
                     if (res != null) {
                       result = res[convertToController.text.toUpperCase()];
                       _con = convertToController.text.toUpperCase();
+                      _cur = currencyController.text.toUpperCase();
+                      _amt = amountController.text;
                     }else {
                       result = "Incorrect currency, please try again.";
                       _con = "";
+                      _cur = "";
+                      _amt = "";
+
                     }
                     setState(() {});
                     },
