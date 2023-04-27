@@ -1,3 +1,5 @@
 class ApiPaths{
-  static const fetchCryptoUrls = 'https://api.bitkub.com';
+  String cryptoApi({required String currency, required String convertTo, required double amount}) {
+    return ('https://api.coinconvert.net/convert/$currency/$convertTo?amount=$amount');
+  }
 }
