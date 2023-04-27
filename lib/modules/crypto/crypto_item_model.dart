@@ -13,11 +13,5 @@ class CryptoItemModel {
     required this.converted,
   });
 
-  CryptoItemModel.fromJson({required Map<String, dynamic> map}) {
-    status = map['currency'];
-    currency = map['currency'];
-    convertTo = map['convertTo'];
-    amount = map['amount'];
-    converted = map['converted'];
-  }
+
 }

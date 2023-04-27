@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/modules/crypto/crypto_item_model.dart';
 import 'package:untitled/modules/crypto/crypto_view_model.dart';
 
 class CryptoView extends StatefulWidget {
@@ -16,6 +15,9 @@ class _CryptoViewState extends State<CryptoView> {
   final amountController = TextEditingController();
   final convertToController = TextEditingController();
   final CryptoViewModel viewModel = CryptoViewModel();
+  String cur = '';
+  String con = '';
+
 
   // This widget is the root of your application.
   @override
@@ -61,7 +63,7 @@ class _CryptoViewState extends State<CryptoView> {
                 ),
                 const SizedBox(height: 16),
                 if(viewModel.cryptoItemModel.status != 'error')
-                  Text('${viewModel.cryptoItemModel.converted}'),
+                  Text('$cur = ${viewModel.cryptoItemModel.converted} $con'),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
@@ -70,6 +72,8 @@ class _CryptoViewState extends State<CryptoView> {
                     viewModel.cryptoItemModel.amount = double.parse(amountController.text);
                     bool success = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
                     if(success) {
+                      con = viewModel.cryptoItemModel.convertTo.toUpperCase();
+                      cur = viewModel.cryptoItemModel.currency.toUpperCase();
                       setState(() {});
                     }
                   },
