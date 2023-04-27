@@ -60,21 +60,17 @@ class _CryptoViewState extends State<CryptoView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (viewModel.cryptoItemModel.status != 'error')
-                  const Text('OK'),
+                if(viewModel.cryptoItemModel.status != 'error')
+                  Text('${viewModel.cryptoItemModel.converted}'),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
+                    viewModel.cryptoItemModel.currency = currencyController.text;
+                    viewModel.cryptoItemModel.convertTo = convertToController.text;
+                    viewModel.cryptoItemModel.amount = double.parse(amountController.text);
                     bool success = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
-                    if (success) {
-                      viewModel.cryptoItemModel.currency = currencyController.text;
-                      viewModel.cryptoItemModel.convertTo = convertToController.text;
-                      viewModel.cryptoItemModel.amount = double.parse(amountController.text);
+                    if(success) {
                       setState(() {});
-                    }else{
-                      setState(() {
-                        viewModel.cryptoItemModel = CryptoItemModel(status: 'error', currency: '', convertTo: '', amount: 0, converted: 0);
-                      });
                     }
                   },
                   child: const Text('Convert'),

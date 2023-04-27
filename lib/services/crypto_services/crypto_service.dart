@@ -5,6 +5,7 @@ import 'package:untitled/modules/crypto/crypto_item_model.dart';
 import 'package:untitled/services/crypto_services/crypto_service_interface.dart';
 
 class CryptoService implements CryptoServiceInterface {
+  @override
   Future<CryptoItemModel> fetchCurrency(
       {required CryptoItemModel cryptoItemModel}) async {
     try {
