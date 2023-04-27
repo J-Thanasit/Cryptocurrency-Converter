@@ -7,8 +7,7 @@ class CryptoViewModel {
   CryptoServiceInterface service = CryptoService();
   Future<bool> onUserTappedConvertButton({required cryptoItemModel}) async {
     try {
-      cryptoItemModel =
-      await service.fetchCurrency(cryptoItemModel: cryptoItemModel);
+      cryptoItemModel = await service.fetchCurrency(cryptoItemModel: cryptoItemModel);
       return true;
     } catch (e) {
       return false;

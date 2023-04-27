@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/services/crypto_services/crypto_service.dart';
+import 'package:untitled/modules/crypto/crypto_item_model.dart';
+import 'package:untitled/modules/crypto/crypto_view_model.dart';
 
 class CryptoView extends StatefulWidget {
   const CryptoView({Key? key}) : super(key: key);
 
   @override
   State<CryptoView> createState() => _CryptoViewState();
-
 }
 
 class _CryptoViewState extends State<CryptoView> {
@@ -15,12 +15,7 @@ class _CryptoViewState extends State<CryptoView> {
   final currencyController = TextEditingController();
   final amountController = TextEditingController();
   final convertToController = TextEditingController();
-  dynamic result;
-  final _con = '';
-  final _cur = '';
-  final _amt = '';
-  CryptoService currencyConverter = CryptoService();
-
+  final CryptoViewModel viewModel = CryptoViewModel();
 
   // This widget is the root of your application.
   @override
@@ -65,16 +60,23 @@ class _CryptoViewState extends State<CryptoView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if(result != null)
-                  Text(
-                      '$_amt $_cur = $result $_con'
-                  ),
+                if (viewModel.cryptoItemModel.status != 'error')
+                  const Text('OK'),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () async {
+                    bool success = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
+                    if (success) {
+                      viewModel.cryptoItemModel.currency = currencyController.text;
+                      viewModel.cryptoItemModel.convertTo = convertToController.text;
+                      viewModel.cryptoItemModel.amount = double.parse(amountController.text);
+                      setState(() {});
+                    }else{
+                      setState(() {
+                        viewModel.cryptoItemModel = CryptoItemModel(status: 'error', currency: '', convertTo: '', amount: 0, converted: 0);
+                      });
                     }
-                    setState(() {});
-                    },
+                  },
                   child: const Text('Convert'),
                 ),
               ],
