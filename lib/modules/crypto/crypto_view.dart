@@ -70,7 +70,7 @@ class _CryptoViewState extends State<CryptoView> {
                   future: viewModel.onUserTappedConvertButton(
                     cryptoItemModel: viewModel.cryptoItemModel,
                   ),
-                  builder: (context, snapshot) {
+                  builder: (BuildContext context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const ElevatedButton(
                         onPressed: null,
@@ -84,9 +84,7 @@ class _CryptoViewState extends State<CryptoView> {
                           viewModel.cryptoItemModel.currency = currencyController.text;
                           viewModel.cryptoItemModel.convertTo = convertToController.text;
                           viewModel.cryptoItemModel.amount = double.parse(amountController.text);
-                          bool success = await viewModel.onUserTappedConvertButton(
-                            cryptoItemModel: viewModel.cryptoItemModel,
-                          );
+                          bool success = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
                           if (success) {
                             con = viewModel.cryptoItemModel.convertTo.toUpperCase();
                             cur = viewModel.cryptoItemModel.currency.toUpperCase();
@@ -96,8 +94,7 @@ class _CryptoViewState extends State<CryptoView> {
                         },
                         child: const Text('Convert'),
                       );
-                    }
-                  },
+                  }
                 ),
               ],
             ),
