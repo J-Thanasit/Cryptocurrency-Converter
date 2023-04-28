@@ -17,6 +17,7 @@ class _CryptoViewState extends State<CryptoView> {
   final CryptoViewModel viewModel = CryptoViewModel();
   String cur = '';
   String con = '';
+  double amt = 0;
 
 
   // This widget is the root of your application.
@@ -62,22 +63,41 @@ class _CryptoViewState extends State<CryptoView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if(viewModel.cryptoItemModel.status != 'error')
-                  Text('$cur = ${viewModel.cryptoItemModel.converted} $con'),
+                if(viewModel.cryptoItemModel.converted != 0)
+                  Text('$amt $cur = ${viewModel.cryptoItemModel.converted} $con'),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    viewModel.cryptoItemModel.currency = currencyController.text;
-                    viewModel.cryptoItemModel.convertTo = convertToController.text;
-                    viewModel.cryptoItemModel.amount = double.parse(amountController.text);
-                    bool success = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
-                    if(success) {
-                      con = viewModel.cryptoItemModel.convertTo.toUpperCase();
-                      cur = viewModel.cryptoItemModel.currency.toUpperCase();
-                      setState(() {});
+                FutureBuilder<bool>(
+                  future: viewModel.onUserTappedConvertButton(
+                    cryptoItemModel: viewModel.cryptoItemModel,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const ElevatedButton(
+                        onPressed: null,
+                        child: Text('Converting...'),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                      return ElevatedButton(
+                        onPressed: () async {
+                          viewModel.cryptoItemModel.currency = currencyController.text;
+                          viewModel.cryptoItemModel.convertTo = convertToController.text;
+                          viewModel.cryptoItemModel.amount = double.parse(amountController.text);
+                          bool success = await viewModel.onUserTappedConvertButton(
+                            cryptoItemModel: viewModel.cryptoItemModel,
+                          );
+                          if (success) {
+                            con = viewModel.cryptoItemModel.convertTo.toUpperCase();
+                            cur = viewModel.cryptoItemModel.currency.toUpperCase();
+                            amt = viewModel.cryptoItemModel.amount;
+                            setState(() {});
+                          }
+                        },
+                        child: const Text('Convert'),
+                      );
                     }
                   },
-                  child: const Text('Convert'),
                 ),
               ],
             ),

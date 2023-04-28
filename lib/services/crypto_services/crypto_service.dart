@@ -5,7 +5,9 @@ import 'package:untitled/modules/crypto/crypto_item_model.dart';
 import 'package:untitled/services/crypto_services/crypto_service_interface.dart';
 
 class CryptoService implements CryptoServiceInterface {
+  @override
   Future<CryptoItemModel> fetchCurrency({required CryptoItemModel cryptoItemModel}) async {
+    try {
       ApiPaths api = ApiPaths();
       final String converter = api.cryptoApi(currency: cryptoItemModel.currency,
           convertTo: cryptoItemModel.convertTo,
@@ -14,11 +16,15 @@ class CryptoService implements CryptoServiceInterface {
       http.Response response = await http.get(url);
       if (response.statusCode == 200) {
         final Map<String, dynamic> curList = json.decode(response.body);
-        cryptoItemModel.converted = curList[cryptoItemModel.convertTo.toUpperCase()];
+        cryptoItemModel.converted =
+        curList[cryptoItemModel.convertTo.toUpperCase()];
         cryptoItemModel.status = curList['status'];
-        return(cryptoItemModel);
+        return (cryptoItemModel);
       }
       throw Exception();
+    }catch(e){
+      throw Exception();
+    }
   }
 }
 
