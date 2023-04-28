@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/modules/crypto/crypto_item_model.dart';
 import 'package:untitled/modules/crypto/crypto_view_model.dart';
 
 class CryptoView extends StatefulWidget {
@@ -66,7 +67,7 @@ class _CryptoViewState extends State<CryptoView> {
                 if(viewModel.cryptoItemModel.converted != 0)
                   Text('$amt $cur = ${viewModel.cryptoItemModel.converted} $con'),
                 const SizedBox(height: 16),
-                FutureBuilder<bool>(
+                FutureBuilder(
                   future: viewModel.onUserTappedConvertButton(
                     cryptoItemModel: viewModel.cryptoItemModel,
                   ),
@@ -84,8 +85,8 @@ class _CryptoViewState extends State<CryptoView> {
                           viewModel.cryptoItemModel.currency = currencyController.text;
                           viewModel.cryptoItemModel.convertTo = convertToController.text;
                           viewModel.cryptoItemModel.amount = double.parse(amountController.text);
-                          bool success = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
-                          if (success) {
+                          CryptoItemModel result = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
+                          if (result) {
                             con = viewModel.cryptoItemModel.convertTo.toUpperCase();
                             cur = viewModel.cryptoItemModel.currency.toUpperCase();
                             amt = viewModel.cryptoItemModel.amount;
