@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/modules/crypto/crypto_item_model.dart';
 import 'package:untitled/modules/crypto/crypto_view_model.dart';
 
 class CryptoView extends StatefulWidget {
@@ -68,24 +67,24 @@ class _CryptoViewState extends State<CryptoView> {
                   Text('$amt $cur = ${viewModel.cryptoItemModel.converted} $con'),
                 const SizedBox(height: 16),
                 FutureBuilder(
-                  future: viewModel.onUserTappedConvertButton(
-                    cryptoItemModel: viewModel.cryptoItemModel,
-                  ),
-                  builder: (BuildContext context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const ElevatedButton(
-                        onPressed: null,
-                        child: Text('Converting...'),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+                    future: viewModel.onUserTappedConvertButton(
+                      cryptoItemModel: viewModel.cryptoItemModel,
+                    ),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const ElevatedButton(
+                          onPressed: null,
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
                       return ElevatedButton(
                         onPressed: () async {
                           viewModel.cryptoItemModel.currency = currencyController.text;
                           viewModel.cryptoItemModel.convertTo = convertToController.text;
                           viewModel.cryptoItemModel.amount = double.parse(amountController.text);
-                          CryptoItemModel result = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
+                          bool result = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
                           if (result) {
                             con = viewModel.cryptoItemModel.convertTo.toUpperCase();
                             cur = viewModel.cryptoItemModel.currency.toUpperCase();
@@ -95,7 +94,7 @@ class _CryptoViewState extends State<CryptoView> {
                         },
                         child: const Text('Convert'),
                       );
-                  }
+                    }
                 ),
               ],
             ),
