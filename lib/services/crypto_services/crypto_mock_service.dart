@@ -3,7 +3,7 @@ import 'package:untitled/modules/crypto/crypto_item_model.dart';
 
 class CryptoMockService implements CryptoServiceInterface {
   @override
-  Future<CryptoItemModel> fetchCurrency({required CryptoItemModel cryptoItemModel}) async {
+  Future<CryptoItemModel> fetchCurrency({required String currency, required String convertTo, required double amount}) async {
     return CryptoItemModel(
       status: 'success',
       currency: "btc",

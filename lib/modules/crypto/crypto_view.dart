@@ -15,10 +15,9 @@ class _CryptoViewState extends State<CryptoView> {
   final amountController = TextEditingController();
   final convertToController = TextEditingController();
   final CryptoViewModel viewModel = CryptoViewModel();
-  String cur = '';
-  String con = '';
-  double amt = 0;
-
+  String? cur = '';
+  String? con = '';
+  double? amt = 0;
 
   // This widget is the root of your application.
   @override
@@ -62,39 +61,48 @@ class _CryptoViewState extends State<CryptoView> {
                     hintText: 'Amount',
                   ),
                 ),
-                const SizedBox(height: 16),
-                if(viewModel.cryptoItemModel.converted != 0)
-                  Text('$amt $cur = ${viewModel.cryptoItemModel.converted} $con'),
-                const SizedBox(height: 16),
-                FutureBuilder(
-                    future: viewModel.onUserTappedConvertButton(
-                      cryptoItemModel: viewModel.cryptoItemModel,
-                    ),
+                Expanded(
+                  child: FutureBuilder(
+                    future: viewModel.cryptoItemModel,
                     builder: (context, snapshot) {
+                      print(snapshot.connectionState);
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const ElevatedButton(
-                          onPressed: null,
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
+                        if(snapshot.data?.status == 'success'){
+                          con = snapshot.data?.convertTo.toUpperCase();
+                          cur = snapshot.data?.currency.toUpperCase();
+                          amt = snapshot.data?.amount;
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$amt $cur = ${snapshot.data?.converted} $con',
+                              ),
+                            ],
+                          );
+                        }else {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                'Currency invalid, please try again.',
+                              ),
+                            ],
+                          );
+                        }
+                      } else {
+                        return const SizedBox.shrink();
                       }
-                      return ElevatedButton(
-                        onPressed: () async {
-                          viewModel.cryptoItemModel.currency = currencyController.text;
-                          viewModel.cryptoItemModel.convertTo = convertToController.text;
-                          viewModel.cryptoItemModel.amount = double.parse(amountController.text);
-                          bool result = await viewModel.onUserTappedConvertButton(cryptoItemModel: viewModel.cryptoItemModel);
-                          if (result) {
-                            con = viewModel.cryptoItemModel.convertTo.toUpperCase();
-                            cur = viewModel.cryptoItemModel.currency.toUpperCase();
-                            amt = viewModel.cryptoItemModel.amount;
-                            setState(() {});
-                          }
-                        },
-                        child: const Text('Convert'),
-                      );
-                    }
+                    },
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {viewModel.onUserTappedConvertButton(currency: currencyController.text,
+                        convertTo: convertToController.text, amount: double.parse(amountController.text));
+                    setState(() {});
+                  },
+                  child: const Text('Convert'),
                 ),
               ],
             ),

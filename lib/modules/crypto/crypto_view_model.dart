@@ -3,14 +3,13 @@ import 'package:untitled/services/crypto_services/crypto_service_interface.dart'
 import 'package:untitled/modules/crypto/crypto_item_model.dart';
 
 class CryptoViewModel {
-  CryptoItemModel cryptoItemModel = CryptoItemModel(status: '', currency: '', convertTo: '', amount: 0, converted: 0);
+  Future<CryptoItemModel>? cryptoItemModel;
   CryptoServiceInterface service = CryptoService();
-  Future<bool> onUserTappedConvertButton({required cryptoItemModel}) async {
+  Future<void> onUserTappedConvertButton({required String currency, required String convertTo, required double amount}) async {
     try {
-      cryptoItemModel = await service.fetchCurrency(cryptoItemModel: cryptoItemModel);
-      return true;
+      cryptoItemModel = service.fetchCurrency(currency: currency, convertTo: convertTo, amount: amount);
     } catch (e) {
-      return false;
+      throw Exception();
     }
   }
 }
