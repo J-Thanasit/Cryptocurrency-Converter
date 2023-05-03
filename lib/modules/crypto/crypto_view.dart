@@ -65,11 +65,10 @@ class _CryptoViewState extends State<CryptoView> {
                   child: FutureBuilder(
                     future: viewModel.cryptoItemModel,
                     builder: (context, snapshot) {
-                      print(snapshot.connectionState);
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                        if(snapshot.data?.status == 'success'){
+                      } else if (snapshot.connectionState == ConnectionState.done) {
+                        if(snapshot.data?.status == 'success' && snapshot.data != null){
                           con = snapshot.data?.convertTo.toUpperCase();
                           cur = snapshot.data?.currency.toUpperCase();
                           amt = snapshot.data?.amount;
@@ -81,12 +80,12 @@ class _CryptoViewState extends State<CryptoView> {
                               ),
                             ],
                           );
-                        }else {
+                        }else{
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: const [
                               Text(
-                                'Currency invalid, please try again.',
+                                'Invalid currency, please try again.',
                               ),
                             ],
                           );
